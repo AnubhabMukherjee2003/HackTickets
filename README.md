@@ -6,9 +6,10 @@ A Web2 + Web3 ticketing platform that combines a familiar mobile app experience 
 
 | Repo | Description |
 |------|-------------|
-| [`htContract`](../htContract) | Solidity smart contract (Hardhat) — ticket registry on-chain |
-| [`htBe`](../htBe) | Express.js backend API + admin web panel (EJS) |
-| [`htApp`](../htApp) | Ionic/React user mobile app |
+| [`HackTickets-Contract`](https://github.com/AnubhabMukherjee2003/HackTickets-Contract) | Solidity smart contract (Hardhat) — ticket registry on-chain |
+| [`HackTickets-Backend`](https://github.com/AnubhabMukherjee2003/HackTickets-Backend) | Express.js backend API + admin web panel (EJS) |
+| [`HackTickets-App`](https://github.com/AnubhabMukherjee2003/HackTickets-App) | Ionic/React user mobile app |
+| [`HackTickets`](https://github.com/AnubhabMukherjee2003/HackTickets) | Documentation, Postman collection, project overview |
 
 ## Architecture Overview
 
