@@ -1,0 +1,446 @@
+{
+  "info": {
+    "name": "Decentralized Ticketing System API",
+    "description": "API collection for the Web2+Web3 ticketing system with JWT authentication and QR-based entry flow.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "userPhone",
+      "value": "9876543210",
+      "type": "string"
+    },
+    {
+      "key": "adminPhone",
+      "value": "1234567890",
+      "type": "string"
+    },
+    {
+      "key": "otp",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventId",
+      "value": "0",
+      "type": "string"
+    },
+    {
+      "key": "ticketId",
+      "value": "0",
+      "type": "string"
+    },
+    {
+      "key": "entryOtp",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Send OTP (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.otp) {",
+                  "        pm.collectionVariables.set('otp', response.otp);",
+                  "        console.log('OTP received:', response.otp);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{userPhone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/send-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "send-otp"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP & Login (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.collectionVariables.set('userToken', response.token);",
+                  "        console.log('User token saved');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{userPhone}}\",\n  \"otp\": \"{{otp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify-otp"]
+            }
+          }
+        },
+        {
+          "name": "Send OTP (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{adminPhone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/send-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "send-otp"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP & Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.collectionVariables.set('adminToken', response.token);",
+                  "        console.log('Admin token saved');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{adminPhone}}\",\n  \"otp\": \"{{otp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify-otp"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Public Endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"]
+            }
+          }
+        },
+        {
+          "name": "Get Event by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "{{eventId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. User Endpoints",
+      "item": [
+        {
+          "name": "Book Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.ticketId) {",
+                  "        pm.collectionVariables.set('ticketId', response.ticketId);",
+                  "        console.log('Ticket ID saved:', response.ticketId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"paymentReference\": \"payment_{{$timestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets/book",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets", "book"]
+            }
+          }
+        },
+        {
+          "name": "Get My Bookings (Specific Event)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets/my-bookings?eventId={{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets", "my-bookings"],
+              "query": [{ "key": "eventId", "value": "{{eventId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Get All My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets/all-bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets", "all-bookings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Entry Flow (QR-based, Admin)",
+      "item": [
+        {
+          "name": "Scan QR — Get Ticket + Trigger OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.otp) {",
+                  "        pm.collectionVariables.set('entryOtp', response.otp);",
+                  "        console.log('Entry OTP received:', response.otp);",
+                  "    }",
+                  "    if (response.ticketId) {",
+                  "        pm.collectionVariables.set('ticketId', response.ticketId);",
+                  "    }",
+                  "    console.log('User phone:', response.phone);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/verifyme/{{ticketId}}/{{userToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verifyme", "{{ticketId}}", "{{userToken}}"]
+            },
+            "description": "Admin scans the user's QR code. The QR encodes: http://<server>/verifyme/<ticketId>/<userJwtToken>\n\nReturns ticket details + user phone. Also sends OTP to user's phone (logged in dev mode).\n\nAdmin then asks: \"What is your phone number?\" and \"What is your OTP?\""
+          }
+        },
+        {
+          "name": "Confirm Entry (Phone + OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticketId\": \"{{ticketId}}\",\n  \"phone\": \"{{userPhone}}\",\n  \"otp\": \"{{entryOtp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/entry/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "entry", "confirm"]
+            },
+            "description": "Admin submits the phone the user verbally confirmed and the OTP the user read out.\n\nVerifies OTP → marks ticket as used on-chain → entry granted."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Endpoints",
+      "item": [
+        {
+          "name": "Create Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.eventId !== undefined) {",
+                  "        pm.collectionVariables.set('eventId', response.eventId);",
+                  "        console.log('Event ID saved:', response.eventId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Conference 2026\",\n  \"location\": \"Convention Center, NYC\",\n  \"date\": 1740787200,\n  \"price\": 100,\n  \"capacity\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "events"]
+            }
+          }
+        },
+        {
+          "name": "Set Event Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/events/{{eventId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "events", "{{eventId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Get Ticket Details",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickets", "{{ticketId}}"]
+            }
+          }
+        },
+        {
+          "name": "Use Ticket Direct (No OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userPhone\": \"{{userPhone}}\",\n  \"eventId\": \"{{eventId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickets/{{ticketId}}/use",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickets", "{{ticketId}}", "use"]
+            },
+            "description": "Manual override — marks ticket as used without OTP. Use the QR entry flow for normal gate operations."
+          }
+        }
+      ]
+    }
+  ]
+}
